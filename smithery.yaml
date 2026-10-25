@@ -1,0 +1,10 @@
+# Smithery configuration: https://smithery.ai/docs/config#smitheryyaml
+# canli-mcp speaks stdio over the published npm package and needs no key.
+startCommand:
+  type: stdio
+  configSchema:
+    type: object
+    properties: {}
+  commandFunction: |-
+    () => ({ command: 'npx', args: ['-y', 'canli-mcp'] })
+  exampleConfig: {}
