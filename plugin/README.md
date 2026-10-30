@@ -32,7 +32,7 @@ trial ledgers and any paper order log in `~/.canli`. Paper trading runs only if 
 
 ## Privacy
 
-See the [privacy policy](https://canlicapital.com/privacy). Your data stays on your machine; only the
+See the [privacy policy](https://github.com/arhancanli/canli-mcp/blob/main/PRIVACY.md). Your data stays on your machine; only the
 queries described above leave it.
 
 ## Support and source

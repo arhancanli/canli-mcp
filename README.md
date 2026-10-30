@@ -423,5 +423,5 @@ as the SEC, and canlicapital.com for the fundamentals and research tools. Calcul
 nothing, and your files, returns and prices are not sent. It keeps a cache of public data in
 `~/.cache/canli-fundamentals`, trial ledgers and any paper order log in `~/.canli`, and an audit log only
 if you turn one on. The hosted server's
-handling is in the [full policy](https://canlicapital.com/privacy). Contact:
+handling is in the [full policy](PRIVACY.md). Contact:
 [GitHub issues](https://github.com/arhancanli/canli-mcp/issues).
