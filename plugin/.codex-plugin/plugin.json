@@ -1,6 +1,6 @@
 {
   "name": "canli-mcp",
-  "version": "0.12.1",
+  "version": "0.12.2",
   "description": "Finance research from the sources: SEC filings, markets, macro, quant and backtests. No key needed.",
   "author": { "name": "Arhan Canli", "url": "https://canlicapital.com/founder" },
   "homepage": "https://canlicapital.com/mcp-servers",
