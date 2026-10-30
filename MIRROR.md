@@ -14,5 +14,5 @@ Imported from canlicapital commit `ce7555b3` (canli-mcp 0.11.1, tag `canli-mcp-v
 
 Files owned by this repository and kept across syncs: `.github/`, `MIRROR.md`, `glama.json`,
 `smithery.yaml`, `Dockerfile`, `plugin/`, `.claude-plugin/`, `.cursor-plugin/`, `.agents/`,
-`gemini-extension.json`, `GEMINI.md` and `PRIVACY.md`. At each sync, move the versions in those manifests to the
+`gemini-extension.json`, `GEMINI.md`, `PRIVACY.md`, `SECURITY.md`, `CONTRIBUTING.md` and `llms-install.md`. At each sync, move the versions in those manifests to the
 release; `scripts/check-plugin-pin.mjs` fails CI otherwise.
