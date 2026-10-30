@@ -6,6 +6,8 @@ Every Canli Capital MCP server in one: 345 finance tools for Claude, Cursor or a
 claude mcp add canli -- npx -y canli-mcp
 ```
 
+Claude Code plugin: `/plugin install canli-mcp --marketplace arhancanli/canli-mcp`. Codex: `codex plugin marketplace add arhancanli/canli-mcp`. Gemini CLI: `gemini extensions install https://github.com/arhancanli/canli-mcp`. Other clients: [install for your client](https://canlicapital.com/mcp-servers#install).
+
 No key and no account. [Add to VS Code](https://insiders.vscode.dev/redirect/mcp/install?name=canli-mcp&config=%7B%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22canli-mcp%22%5D%7D)
 · [Try the views in your browser](https://canlicapital.com/mcp-servers#views)
 · [Questions it answers](https://canlicapital.com/mcp-servers/answers)
@@ -412,3 +414,14 @@ node bench/robustness.mjs  # every tool, offline, with hostile arguments: crashe
 ```
 
 MIT licence.
+
+## Privacy policy
+
+Run locally, canli-mcp keeps your data on your machine and has no telemetry. A data tool sends the
+company, series, symbol or search words you asked about to the source of that data: public bodies such
+as the SEC, and canlicapital.com for the fundamentals and research tools. Calculation tools send
+nothing, and your files, returns and prices are not sent. It keeps a cache of public data in
+`~/.cache/canli-fundamentals`, trial ledgers and any paper order log in `~/.canli`, and an audit log only
+if you turn one on. The hosted server's
+handling is in the [full policy](https://canlicapital.com/privacy). Contact:
+[GitHub issues](https://github.com/arhancanli/canli-mcp/issues).

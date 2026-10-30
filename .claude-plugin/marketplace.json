@@ -1,0 +1,7 @@
+{
+  "name": "canli",
+  "owner": { "name": "Arhan Canli" },
+  "plugins": [
+    { "name": "canli-mcp", "source": "./plugin", "description": "Finance research from the sources: SEC filings, markets, macro, quant and backtests. No key needed." }
+  ]
+}

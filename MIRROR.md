@@ -13,4 +13,6 @@ Imported from canlicapital commit `ce7555b3` (canli-mcp 0.11.1, tag `canli-mcp-v
 - Interactive views, played from recordings: https://canlicapital.com/mcp-servers
 
 Files owned by this repository and kept across syncs: `.github/`, `MIRROR.md`, `glama.json`,
-`smithery.yaml` and `Dockerfile`.
+`smithery.yaml`, `Dockerfile`, `plugin/`, `.claude-plugin/`, `.cursor-plugin/`, `.agents/`,
+`gemini-extension.json` and `GEMINI.md`. At each sync, move the versions in those manifests to the
+release; `scripts/check-plugin-pin.mjs` fails CI otherwise.

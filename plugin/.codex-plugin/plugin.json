@@ -1,0 +1,20 @@
+{
+  "name": "canli-mcp",
+  "version": "0.11.1",
+  "description": "Finance research from the sources: SEC filings, markets, macro, quant and backtests. No key needed.",
+  "author": { "name": "Arhan Canli", "url": "https://canlicapital.com/founder" },
+  "homepage": "https://canlicapital.com/mcp-servers",
+  "repository": "https://github.com/arhancanli/canli-mcp",
+  "license": "MIT",
+  "keywords": ["finance", "sec-filings", "quant", "backtesting", "macro", "mcp"],
+  "skills": "./skills/",
+  "mcpServers": "./.mcp.json",
+  "interface": {
+    "displayName": "Canli Capital finance tools",
+    "shortDescription": "SEC filings, markets, macro, quant and backtests, from the sources.",
+    "developerName": "Arhan Canli",
+    "category": "Finance",
+    "websiteURL": "https://canlicapital.com/mcp-servers",
+    "logo": "./assets/logo.png"
+  }
+}
