@@ -1,0 +1,47 @@
+# Attaches the exact npm tarball of a release, with signed build provenance (Sigstore, through GitHub's OIDC
+# token; no stored keys), to the GitHub release.
+#
+# Verify a download:  gh attestation verify canli-mcp-<version>.tgz --repo arhancanli/canli-mcp
+name: Release assets
+
+on:
+  release:
+    types: [published]
+
+permissions: read-all
+
+jobs:
+  assets:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+      attestations: write
+    env:
+      TAG: ${{ github.event.release.tag_name }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.release.tag_name }}
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24
+      - name: The published package, as npm serves it
+        run: |
+          version="$(node -p "require('./package.json').version")"
+          test "v$version" = "$TAG" || { echo "tag $TAG != package.json $version"; exit 1; }
+          mkdir dist
+          (cd dist && npm pack "canli-mcp@$version" --silent && sha256sum ./*.tgz > SHA256SUMS.txt)
+      - id: attest
+        uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
+        with:
+          subject-path: dist/*.tgz
+      - name: Attach the package, checksums and signed provenance
+        env:
+          BUNDLE: ${{ steps.attest.outputs.bundle-path }}
+        run: |
+          cp "$BUNDLE" dist/canli-mcp.tgz.sigstore.json
+          jq -c '.dsseEnvelope' "$BUNDLE" > dist/canli-mcp.tgz.intoto.jsonl
+          gh release upload "$TAG" dist/*.tgz dist/SHA256SUMS.txt dist/canli-mcp.tgz.sigstore.json dist/canli-mcp.tgz.intoto.jsonl --clobber

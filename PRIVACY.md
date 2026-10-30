@@ -10,7 +10,7 @@ no personal details, and there is no telemetry.
   to the source of that data. These are public bodies such as the SEC, the Treasury and central banks, other
   public sources such as Yahoo Finance and Cboe, and canlicapital.com for the point-in-time fundamentals and
   the research record. Calculation tools send nothing. Your files, returns and prices are not sent.
-- **What stays on your disk:** a cache of public data in `~/.cache/canli-fundamentals`, trial ledgers and any
+- **What stays on your disk:** caches of public data in `~/.cache/canli-fundamentals` and `~/.cache/canli-markets` (compressed filings and company facts, at most 512 MB; they show which companies you looked up, on your own machine; `CANLI_DISK_CACHE=0` turns the second off), trial ledgers and any
   paper order log in `~/.canli`, and an audit log only if you turn one on. Delete those folders to remove them.
 - **Paper trading:** only if you set your own Alpaca paper keys, and then only to Alpaca.
 
