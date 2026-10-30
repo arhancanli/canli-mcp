@@ -1,0 +1,9 @@
+id = "canli-mcp"
+name = "Canli Capital"
+version = "0.1.0"
+schema_version = 1
+authors = ["Arhan Canli"]
+description = "A full finance desk for your agent: SEC filings, markets, macro, options, quant analytics and backtest validation. No API key."
+repository = "https://github.com/arhancanli/canli-mcp"
+
+[context_servers.canli-mcp]

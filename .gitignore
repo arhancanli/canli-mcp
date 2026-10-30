@@ -2,3 +2,4 @@
 .swarm/
 agentdb.rvf*
 ruvector.db
+node_modules/
