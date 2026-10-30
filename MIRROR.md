@@ -5,7 +5,7 @@ installed, scanned and reviewed on its own. It is imported from the `mcp-canli/`
 [arhancanli/canlicapital](https://github.com/arhancanli/canlicapital/tree/main/mcp-canli), which is
 where changes are made and tested; this repository is updated from it at each release.
 
-Imported from canlicapital commit `458d4200` (canli-mcp 0.12.2, tag `canli-mcp-v0.12.2`).
+Imported from canlicapital commit `3b776020` (canli-mcp 0.13.0, tag `canli-mcp-v0.13.0`).
 
 - npm: https://www.npmjs.com/package/canli-mcp
 - MCP Registry: `io.github.arhancanli/canli-mcp`
