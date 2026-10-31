@@ -9,3 +9,8 @@ updates:
     directory: /
     schedule:
       interval: weekly
+    # CodeQL's init and analyze steps must move together, or every bump fails its own check.
+    groups:
+      codeql:
+        patterns:
+          - "github/codeql-action*"
