@@ -1,5 +1,5 @@
 {
   "mcpServers": {
-    "canli": { "command": "npx", "args": ["-y", "canli-mcp@0.13.2"] }
+    "canli": { "command": "npx", "args": ["-y", "canli-mcp@0.14.0"] }
   }
 }

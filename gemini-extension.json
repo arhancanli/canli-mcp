@@ -1,9 +1,9 @@
 {
   "name": "canli-mcp",
-  "version": "0.13.2",
+  "version": "0.14.0",
   "description": "Finance research from the sources: SEC filings, markets, macro, quant and backtests. No key needed.",
   "mcpServers": {
-    "canli": { "command": "npx", "args": ["-y", "canli-mcp@0.13.2"] }
+    "canli": { "command": "npx", "args": ["-y", "canli-mcp@0.14.0"] }
   },
   "contextFileName": "GEMINI.md"
 }
