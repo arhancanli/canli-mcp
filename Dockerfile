@@ -4,4 +4,4 @@ COPY package.json package-lock.json ./
 RUN npm ci --omit=dev --ignore-scripts
 COPY src ./src
 COPY local ./local
-ENTRYPOINT ["node", "src/server.mjs"]
+ENTRYPOINT ["node", "src/start.mjs"]
