@@ -1,0 +1,88 @@
+// Luck counted by the server itself: a strategy result recognised by its tool, Sharpe and periods, labelled by
+// its settings and not its data; every trial so far counted and the best one deflated; a ledger per sampling
+// frequency; the hosted server saying it counts one request; and over stdio, a second backtest told about the
+// first while a tool that only measures a Sharpe is left alone.
+import assert from "node:assert/strict";
+import path from "node:path";
+import test from "node:test";
+import { fileURLToPath } from "node:url";
+
+import { Client } from "@modelcontextprotocol/client";
+import { StdioClientTransport } from "@modelcontextprotocol/client/stdio";
+
+import { createLuck, shownTrials, trialOf, trialsOf } from "../src/luck.mjs";
+
+const ENTRY = path.join(path.dirname(fileURLToPath(import.meta.url)), "../src/server.mjs");
+const result = (sharpe, periods = 500, parameters = { fast: 20, slow: 100 }) => ({ rule: "ma crossover", parameters, sharpe, periods, total_return: 0.1 });
+
+test("a strategy result is a trial: its Sharpe and periods, labelled by its settings, not its data", () => {
+  const t = trialOf("backtest_ma_crossover", { prices: [1, 2, 3], fast: 20, slow: 100 }, result(0.9));
+  assert.deepEqual(t, { label: "backtest_ma_crossover fast=20 slow=100", sharpe_annualized: 0.9, observations: 500, params: { tool: "backtest_ma_crossover", fast: 20, slow: 100 } });
+  // Without parameters of its own, the arguments other than data and $result references name it.
+  assert.equal(trialOf("backtest_weights", { weights: [[0.5, 0.5]], rebalance_every: 21, prices: { $result: 0, path: "close" } }, { sharpe: 0.5, periods: 120 }).label, "backtest_weights rebalance_every=21");
+  assert.equal(trialOf("sharpe_ratio", { prices: [1, 2, 3] }, { sharpe: 1.4, periods: 299 }), null, "measuring a Sharpe tests no strategy");
+  for (const other of [{ sharpe: "high", periods: 500 }, { sharpe: 1.2 }, { sharpe: 1.2, periods: 1 }, { price: 3.2 }, [1, 2], null]) assert.equal(trialOf("backtest_breakout", {}, other), null, JSON.stringify(other));
+});
+
+test("every trial so far is counted and the best one deflated; each sampling frequency has its own ledger", () => {
+  const luck = createLuck({ now: () => "2026-11-04T06:00:00.000Z" });
+  assert.equal(luck.record("black_scholes", {}, { price: 10.45 }), null, "not a strategy");
+  const first = luck.record("backtest_ma_crossover", { fast: 20, slow: 100 }, result(0.6));
+  assert.deepEqual([first.trials, first.deflated_sharpe_ratio, first.best.label], [1, null, "backtest_ma_crossover fast=20 slow=100"]);
+  assert.match(first.reading, /^The first strategy tested in this session/);
+  luck.record("backtest_ma_crossover", { fast: 50, slow: 200 }, result(1.1, 500, { fast: 50, slow: 200 }));
+  const third = luck.record("backtest_ma_crossover", { fast: 10, slow: 50 }, result(0.2, 500, { fast: 10, slow: 50 }));
+  assert.deepEqual([third.trials, third.best.trial, third.best.sharpe_annualized], [3, 2, 1.1]);
+  assert.ok(third.deflated_sharpe_ratio > 0 && third.deflated_sharpe_ratio < 1, "a probability once two trials differ");
+  assert.ok(third.expected_best_by_luck_annualized > 0);
+  assert.equal(third.best.label, "backtest_ma_crossover fast=50 slow=200");
+  assert.match(third.reading, /^3 strategies tested in this session\. The best \(trial 2, Sharpe 1\.10\) against about \d\.\d\d from luck alone: deflated Sharpe 0\.\d\d/);
+  assert.ok(third.reading.length < 220, "short: it rides on every strategy answer");
+  // Monthly backtests are a ledger of their own.
+  const monthly = luck.record("backtest_time_series_momentum", { lookback: 12, periods_per_year: 12 }, { sharpe: 0.8, periods: 120 });
+  assert.deepEqual([monthly.periods_per_year, monthly.trials], [12, 1]);
+  assert.match(monthly.reading, /3 more at other frequencies, counted apart/);
+  assert.equal(luck.trials, 4);
+  // The hosted server says what it counts.
+  assert.match(createLuck({ scope: "request" }).record("backtest_ma_crossover", {}, result(1)).reading, /Hosted: only this request is counted/);
+});
+
+test("a sweep counts every variant it tried, named by its settings where its table shows them; the model reads how many", () => {
+  const luck = createLuck({ now: () => "2026-11-04T07:00:00.000Z" });
+  const sharpes = Array.from({ length: 56 }, (_, i) => Number((1.2 - i * 0.02).toFixed(2)));
+  const sweep = { recipe: "ma_crossover", combinations: 56, columns: ["params", "sharpe", "cagr", "max_drawdown", "annual_turnover"], rows: sharpes.slice(0, 50).map((x, i) => [{ fast: 5 + i, slow: 100 }, x, 0.1, -0.2, 3]), every_trial: { periods: 699, periods_per_year: 252, sharpes } };
+  const found = trialsOf("strategy_sweep", { recipe: "ma_crossover", arguments: { prices: [1, 2] }, grid: { fast: [5] } }, sweep);
+  assert.equal(found.length, 56);
+  assert.deepEqual(found[0], { label: "strategy_sweep ma_crossover fast=5 slow=100", sharpe_annualized: 1.2, observations: 699, params: { tool: "strategy_sweep", recipe: "ma_crossover", fast: 5, slow: 100 } });
+  assert.equal(found[55].label, "strategy_sweep ma_crossover variant 56 of 56", "past the table's fifty, its place");
+  const note = luck.record("strategy_sweep", {}, sweep);
+  assert.equal(note.trials, 56);
+  assert.equal(note.best.label, "strategy_sweep ma_crossover fast=5 slow=100");
+  assert.ok(note.expected_best_by_luck_annualized > 0);
+  assert.equal(luck.record("backtest_ma_crossover", { fast: 9, slow: 100 }, result(0.5)).trials, 57, "a later backtest is judged against every try");
+  const tournament = { sleeves_run: 3, leaderboard: [["tsmom-252-vt10-long", "time_series_momentum", 0.8]], every_trial: { periods: 500, periods_per_year: 252, sharpes: [0.8, 0.3, -0.1] } };
+  assert.deepEqual(trialsOf("sleeve_tournament", {}, tournament).map((t) => t.label), ["sleeve_tournament tsmom-252-vt10-long", "sleeve_tournament variant 2 of 3", "sleeve_tournament variant 3 of 3"]);
+  assert.deepEqual(shownTrials(sweep).every_trial, { periods: 699, periods_per_year: 252, counted: 56 });
+  assert.equal(shownTrials(result(1)).sharpe, 1, "anything else is left as it is");
+  // Before canli-quant-mcp 0.3.0 a sweep carried no every_trial, and is not counted, as before.
+  assert.deepEqual(trialsOf("strategy_sweep", {}, { recipe: "ma_crossover", rows: [] }), []);
+  assert.deepEqual(trialsOf("sleeve_tournament", {}, { periods: 900, leaderboard: [] }), []);
+});
+
+test("over stdio, the second backtest of a session is told about the first, and measuring a Sharpe is not counted", async () => {
+  const c = new Client({ name: "luck-test", version: "0" });
+  await c.connect(new StdioClientTransport({ command: process.execPath, args: [ENTRY], env: { PATH: process.env.PATH ?? "", HOME: process.env.HOME ?? "", CANLI_CACHE_DIR: "", CANLI_OFFLINE: "1" } }));
+  try {
+    const prices = Array.from({ length: 400 }, (_, i) => 100 * Math.exp(0.0004 * i + 0.02 * Math.sin(i / 7)));
+    const run = async (name, args) => JSON.parse((await c.callTool({ name: "run_tool", arguments: { name, arguments: { prices, ...args } } })).content[0].text);
+    const measured = await run("sharpe_ratio", {});
+    const a = await run("backtest_ma_crossover", { fast: 10, slow: 50 });
+    const b = await run("backtest_ma_crossover", { fast: 20, slow: 100 });
+    assert.equal(measured.luck, undefined);
+    assert.deepEqual([a.luck.trials, b.luck.trials], [1, 2]);
+    assert.notEqual(b.luck.deflated_sharpe_ratio, null);
+    assert.match(b.luck.reading, /^2 strategies tested in this session/);
+  } finally {
+    await c.close();
+  }
+});

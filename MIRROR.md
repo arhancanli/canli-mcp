@@ -5,14 +5,14 @@ installed, scanned and reviewed on its own. It is imported from the `mcp-canli/`
 [arhancanli/canlicapital](https://github.com/arhancanli/canlicapital/tree/main/mcp-canli), which is
 where changes are made and tested; this repository is updated from it at each release.
 
-Imported from canlicapital commit `6f4f5402` (canli-mcp 0.17.1, tag `canli-mcp-v0.17.1`).
+Imported from canlicapital commit `03f66260` (canli-mcp 0.18.0, tag `canli-mcp-v0.18.0`).
 
 - npm: https://www.npmjs.com/package/canli-mcp
 - MCP Registry: `io.github.arhancanli/canli-mcp`
 - Hosted endpoint (no install): https://canlicapital.com/mcp/canli
 - Interactive views, played from recordings: https://canlicapital.com/mcp-servers
 
-Files owned by this repository and kept across syncs: `.github/`, `MIRROR.md`, `glama.json`,
+Files owned by this repository and kept across syncs: `.github/`, `.gitignore`, `MIRROR.md`, `glama.json`,
 `smithery.yaml`, `Dockerfile`, `plugin/`, `.claude-plugin/`, `.cursor-plugin/`, `.agents/`,
 `gemini-extension.json`, `GEMINI.md`, `PRIVACY.md`, `SECURITY.md`, `CONTRIBUTING.md`, `llms-install.md`, `zed/` and `scripts/check-plugin-pin.mjs`. At each sync, move the versions in those manifests to the
 release; `scripts/check-plugin-pin.mjs` fails CI otherwise.
