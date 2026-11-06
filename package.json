@@ -26,7 +26,7 @@
   },
   "dependencies": {
     "@modelcontextprotocol/client": "2.3.1",
-    "@modelcontextprotocol/server": "2.3.1",
+    "@modelcontextprotocol/server": "2.4.0",
     "canli-backtest-mcp": "0.5.1",
     "canli-fundamentals-mcp": "0.9.1",
     "canli-markets-mcp": "0.16.0",
